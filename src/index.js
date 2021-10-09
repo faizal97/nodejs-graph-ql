@@ -13,11 +13,31 @@ const resolvers = {
         info: () => `This is the API of the Hackernews Clone`,
         feed: () => links,
     },
-    Link: {
-        id: (parent) => parent.id,
-        description: (parent) => parent.description,
-        url: (parent) => parent.url,
-    }
+    Mutation: {
+        post: (parent, args) => {
+            let idCount = links.length
+
+            const link = {
+                id: `link-${idCount++}`,
+                description: args.description,
+                url: args.url,
+            }
+            links.push(link)
+            return link
+        },
+        updateLink: (parent, args) => {
+            links.forEach((item) => {
+                if (item.id == args.id) {
+                    item.description = args.description
+                    item.url = args.url
+                    return item
+                }
+            })
+        },
+        deleteLink: (parent, args) => {
+            links.pop({id: args.id})
+        },
+    },
 }
 
 const server =  new ApolloServer({
